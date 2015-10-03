@@ -1,56 +1,60 @@
-elasticsearch-data:
+bittorrent-sync-data:
   image: busybox
-  container_name: elasticsearch-data
+  container_name: bittorrent-sync-data
   command: "true"
   volumes:
-      - /usr/share/elasticsearch/data
+      - /mnt/bookkeeping
+      - /mnt/sync
 
-elasticsearch:
-  image: elasticsearch
-  container_name: elasticsearch
+bittorrent-sync:
+  image: kurron/docker-bittorrent-sync
+  container_name: bittorrent-sync
   volumes_from:
-      - elasticsearch-data
+      - bittorrent-sync-data
   restart: always
-# net: host
+  net: host
   ports:
-      - "9200:9200"
-      - "9300:9300"
-# command: elasticsearch -Des.node.name="logstash"
+      - "1234:1234"
+      - "8888:8888"
 
-logstash:
-  image: logstash
-  container_name: logstash
-  restart: always
-# net: host
-  expose:
-      - "25826"
-      - "12201"
-  ports:
-      - "1234:25826"
-      - "1234:25826/udp"
-      - "5678:12201"
-      - "5678:12201/udp"
+plex-data:
+  image: busybox
+  container_name: plex-data
+  command: "true"
   volumes:
-      - ./conf:/conf
-  links:
-      - elasticsearch:db
-# command: logstash -f /conf/gelf.conf
-  command: logstash -f /conf/syslog.conf
-# command: logstash agent
+      - /config
 
-kibana:
-  image: kibana
-  container_name: kibana
+plex:
+  image: timhaak/plex
+  container_name: plex
   restart: always
-# net: host
-  links:
-      - elasticsearch:elasticsearch
+  net: host
   ports:
-      - "5601:5601"
-# environment:
-#     ELASTICSEARCH_URL: http://10.0.2.15:9200/
-# log_driver: "gelf"
-# log_opt:
-#   gelf-address=udp://host:port
-#   gelf-tag="kibana"
+      - "32400:32400"
+  volumes_from:
+      - plex-data
+      - bittorrent-sync-data
+  volumes:
+      - /mnt/nas:/data
 
+transmission-data:
+  image: busybox
+  container_name: transmission-data
+  command: "true"
+  volumes:
+      - /var/lib/transmission-daemon
+
+transmission:
+  image: dperson/transmission
+  container_name: transmission 
+  volumes_from:
+      - transmission-data
+  restart: always
+  net: host
+  ports:
+      - "9091:9091"
+      - "51413:51413"
+  environment:
+      TRUSER: admin
+      TRPASSWD: admin
+      TIMEZONE: UTC
