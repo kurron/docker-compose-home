@@ -58,3 +58,20 @@ transmission:
       TRUSER: admin
       TRPASSWD: admin
       TIMEZONE: UTC
+
+owncloud-data:
+  image: busybox
+  container_name: owncloud-data
+  command: "true"
+  volumes:
+      - /var/www/html
+
+owncloud:
+  image: owncloud
+  container_name: owncloud 
+# volumes_from:
+#     - transmission-data
+  restart: always
+  net: host
+  ports:
+      - "80:80"
