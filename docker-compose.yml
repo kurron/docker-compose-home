@@ -1,0 +1,56 @@
+elasticsearch-data:
+  image: busybox
+  container_name: elasticsearch-data
+  command: "true"
+  volumes:
+      - /usr/share/elasticsearch/data
+
+elasticsearch:
+  image: elasticsearch
+  container_name: elasticsearch
+  volumes_from:
+      - elasticsearch-data
+  restart: always
+# net: host
+  ports:
+      - "9200:9200"
+      - "9300:9300"
+# command: elasticsearch -Des.node.name="logstash"
+
+logstash:
+  image: logstash
+  container_name: logstash
+  restart: always
+# net: host
+  expose:
+      - "25826"
+      - "12201"
+  ports:
+      - "1234:25826"
+      - "1234:25826/udp"
+      - "5678:12201"
+      - "5678:12201/udp"
+  volumes:
+      - ./conf:/conf
+  links:
+      - elasticsearch:db
+# command: logstash -f /conf/gelf.conf
+  command: logstash -f /conf/syslog.conf
+# command: logstash agent
+
+kibana:
+  image: kibana
+  container_name: kibana
+  restart: always
+# net: host
+  links:
+      - elasticsearch:elasticsearch
+  ports:
+      - "5601:5601"
+# environment:
+#     ELASTICSEARCH_URL: http://10.0.2.15:9200/
+# log_driver: "gelf"
+# log_opt:
+#   gelf-address=udp://host:port
+#   gelf-tag="kibana"
+
