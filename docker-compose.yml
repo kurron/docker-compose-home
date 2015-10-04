@@ -69,8 +69,9 @@ owncloud-data:
 owncloud:
   image: owncloud
   container_name: owncloud 
-# volumes_from:
-#     - transmission-data
+  volumes_from:
+      - transmission-data
+      - bittorrent-sync-data
   restart: always
   net: host
   ports:
