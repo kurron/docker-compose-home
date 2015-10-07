@@ -89,6 +89,7 @@ owncloud:
   image: owncloud
   container_name: owncloud 
   volumes_from:
+      - owncloud-data
       - transmission-data
       - bittorrent-sync-data
   restart: always
