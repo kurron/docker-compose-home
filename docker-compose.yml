@@ -59,28 +59,24 @@ transmission:
       TRPASSWD: admin
       TIMEZONE: UTC
 
-mysql-data:
+postgresql-data:
   image: busybox
-  container_name: mysql-data
+  container_name: postgresql-data
   volumes:
-      - /var/lib/mysql
-      - /etc/mysql/conf.d
+      - /var/lib/postgresql/data
 
-mysql:
-  image: mysql
-  container_name: mysql
-  hostname: mysql
+postgresql:
+  image: postgres
+  container_name: postgresql
   volumes_from:
-      - mysql-data
+      - postgresql-data
   restart: always
   ports:
-      - "3306:3306"
+      - "5432:5432"
   net: host
   environment:
-      MYSQL_ROOT_PASSWORD: sa
-      MYSQL_USER: mysql
-      MYSQL_PASSWORD: mysql
-      MYSQL_DATABASE: owncloud
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
 
 owncloud-data:
   image: busybox
