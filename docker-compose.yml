@@ -16,6 +16,11 @@ bittorrent-sync:
   ports:
       - "1234:1234"
       - "8888:8888"
+  log_driver: "syslog"
+  log_opt:
+#   syslog-address: udp://localhost:1234
+    syslog-facility: daemon
+    syslog-tag: "Bit Torrent Sync"
 
 plex-data:
   image: busybox
@@ -36,6 +41,11 @@ plex:
       - bittorrent-sync-data
   volumes:
       - /mnt/nas:/data
+  log_driver: "syslog"
+  log_opt:
+#   syslog-address: udp://localhost:1234
+    syslog-facility: daemon
+    syslog-tag: "Plex"
 
 transmission-data:
   image: busybox
@@ -58,6 +68,11 @@ transmission:
       TRUSER: admin
       TRPASSWD: admin
       TIMEZONE: UTC
+  log_driver: "syslog"
+  log_opt:
+#   syslog-address: udp://localhost:1234
+    syslog-facility: daemon
+    syslog-tag: "Transmission"
 
 postgresql-data:
   image: busybox
@@ -77,6 +92,11 @@ postgresql:
   environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+  log_driver: "syslog"
+  log_opt:
+#   syslog-address: udp://localhost:1234
+    syslog-facility: daemon
+    syslog-tag: "PostgreSQL"
 
 owncloud-data:
   image: busybox
@@ -96,3 +116,9 @@ owncloud:
   net: host
   ports:
       - "80:80"
+  log_driver: "syslog"
+  log_opt:
+#   syslog-address: udp://localhost:1234
+    syslog-facility: daemon
+    syslog-tag: "Owncloud"
+
