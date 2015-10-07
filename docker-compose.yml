@@ -59,6 +59,29 @@ transmission:
       TRPASSWD: admin
       TIMEZONE: UTC
 
+mysql-data:
+  image: busybox
+  container_name: mysql-data
+  volumes:
+      - /var/lib/mysql
+      - /etc/mysql/conf.d
+
+mysql:
+  image: mysql
+  container_name: mysql
+  hostname: mysql
+  volumes_from:
+      - mysql-data
+  restart: always
+  ports:
+      - "3306:3306"
+  net: host
+  environment:
+      MYSQL_ROOT_PASSWORD: sa
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
+      MYSQL_DATABASE: owncloud
+
 owncloud-data:
   image: busybox
   container_name: owncloud-data
