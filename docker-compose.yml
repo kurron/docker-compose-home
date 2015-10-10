@@ -138,9 +138,9 @@ syncthing:
   net: host
   ports:
       - "8384:8384"
-  log_driver: "syslog"
-  log_opt:
+# log_driver: "syslog"
+# log_opt:
 #   syslog-address: udp://localhost:1234
-    syslog-facility: daemon
-    syslog-tag: "Synchthing"
-  command: syncthing -no-browser -verbose
+#   syslog-facility: daemon
+#   syslog-tag: "Synchthing"
+# command: syncthing -no-browser -verbose
