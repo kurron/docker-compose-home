@@ -121,26 +121,3 @@ owncloud:
 #   syslog-address: udp://localhost:1234
     syslog-facility: daemon
     syslog-tag: "Owncloud"
-
-syncthing-data:
-  image: busybox
-  container_name: syncthing-data
-  command: "true"
-  volumes:
-      - /home/user
-
-syncthing:
-  image: tianon/syncthing
-  container_name: syncthing
-  volumes_from:
-      - syncthing-data
-  restart: always
-  net: host
-  ports:
-      - "8384:8384"
-# log_driver: "syslog"
-# log_opt:
-#   syslog-address: udp://localhost:1234
-#   syslog-facility: daemon
-#   syslog-tag: "Synchthing"
-# command: syncthing -no-browser -verbose
