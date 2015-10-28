@@ -18,7 +18,6 @@ bittorrent-sync:
       - "8888:8888"
   log_driver: "syslog"
   log_opt:
-#   syslog-address: udp://localhost:1234
     syslog-facility: daemon
     syslog-tag: "Bit Torrent Sync"
 
@@ -43,7 +42,6 @@ plex:
       - /mnt/nas:/data
   log_driver: "syslog"
   log_opt:
-#   syslog-address: udp://localhost:1234
     syslog-facility: daemon
     syslog-tag: "Plex"
 
@@ -70,7 +68,6 @@ transmission:
       TIMEZONE: UTC
   log_driver: "syslog"
   log_opt:
-#   syslog-address: udp://localhost:1234
     syslog-facility: daemon
     syslog-tag: "Transmission"
 
@@ -83,20 +80,46 @@ postgresql-data:
 postgresql:
   image: postgres
   container_name: postgresql
+  net: host
   volumes_from:
       - postgresql-data
   restart: always
   ports:
       - "5432:5432"
-  net: host
   environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgresql
+      POSTGRES_PASSWORD: postgresql
+      PGDATA: /var/lib/postgresql/data
   log_driver: "syslog"
   log_opt:
-#   syslog-address: udp://localhost:1234
     syslog-facility: daemon
     syslog-tag: "PostgreSQL"
+
+mysql-data:
+  image: busybox
+  container_name: mysql-data
+  volumes:
+      - /var/lib/mysql
+      - /etc/mysql/conf.d
+
+mysql:
+  image: mysql
+  container_name: mysql
+  net: host
+  volumes_from:
+      - mysql-data
+  restart: always
+  ports:
+      - "3306:3306"
+  environment:
+      MYSQL_ROOT_PASSWORD: sa
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
+      MYSQL_DATABASE: owncloud
+  log_driver: "syslog"
+  log_opt:
+    syslog-facility: daemon
+    syslog-tag: "MySQL"
 
 owncloud-data:
   image: busybox
@@ -107,7 +130,7 @@ owncloud-data:
 
 owncloud:
   image: owncloud
-  container_name: owncloud 
+  container_name: owncloud
   volumes_from:
       - owncloud-data
       - transmission-data
@@ -118,6 +141,5 @@ owncloud:
       - "80:80"
   log_driver: "syslog"
   log_opt:
-#   syslog-address: udp://localhost:1234
     syslog-facility: daemon
     syslog-tag: "Owncloud"
